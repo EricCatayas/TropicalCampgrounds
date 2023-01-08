@@ -1,0 +1,17 @@
+<%- layout('layouts/boilertemplate') %> 
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="alert alert-danger">
+            <h4 class="alert-heading"><%= err.name %></h4>
+            <h5>Status: <%= err.status %> </h5>
+            <div>
+                <p><small><%= err.message %></small></p>
+            </div>
+            <% if(process.env.NODE_ENV !== 'production') {%> <!-- Do not display to user-->
+                <div>
+                    <p><small><%= err.stack %></small></p>
+                </div>
+            <% } %> 
+        </div>
+    </div>
+</div>

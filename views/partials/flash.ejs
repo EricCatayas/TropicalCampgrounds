@@ -1,0 +1,18 @@
+<!-- C: flash.ejs
+            check if success is not null && is not empty
+            "Successfully deleted campground / review / etc"
+            "Error: cannot find that campground" -->
+<% if(success && success.length){ %>
+    <div class="alert alert-success" role="alert">
+        <%= success %>
+    </div>    
+<% } else if (error && error.length){%>
+    <div class="alert alert-danger" role="alert">
+        <%= error %>
+    </div> 
+<% } else { } %> 
+            
+
+
+
+<!-- TODO: D: message evaluating () -->

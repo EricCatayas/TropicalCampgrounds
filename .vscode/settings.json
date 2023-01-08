@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/38082acd-4331-43d5-83ef-0d790f720971/AppServices/subscriptions/38082acd-4331-43d5-83ef-0d790f720971/resourceGroups/TrialPractice/providers/Microsoft.Web/sites/TropicalCampgrounds",
+    "appService.deploySubpath": "."
+}

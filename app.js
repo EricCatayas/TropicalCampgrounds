@@ -31,7 +31,7 @@ app.use(flash());        // connect.sid i.e session id, a cookie sent for verifi
 
 const DB_URL = process.env.DB_URL;   // Mongo Atlas Db is our cloud web server
 const localHostURL = "mongodb://127.0.0.1:27017/yelpCamp";
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 80; // By default, azure listens to port 80
 
 const store = MongoDBStore.create({          // We want our session stored in mongo, not in memory
     mongoUrl: localHostURL,
@@ -201,5 +201,5 @@ app.use((req,res)=>{
     res.send('Page Not Found');   // runs only when no page above exists
 })
 app.listen(port, ()=>{
-    console.log("I am listenin to port 3000");
+    console.log(`I am listenin to port ${port}`);
 })

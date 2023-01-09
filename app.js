@@ -42,13 +42,13 @@ const store = MongoDBStore.create({          // We want our session stored in mo
 }).on("error", function(e){ console.log(e)})
 
 const sessionOption = {
-    secret:'Thisislegitsecret',
+    secret: process.env.SECRET,
     resave:false,
     saveUninitialized:true,                                                                         //when saveUninitialized is set to false, the session will not be saved or the session cookie will not be set on the browser unless the session is modified
     cookie:{  
         expires: Date.now() + 1000 * 60 * 60 * 24, 
         httpOnly: true, 
-        // secure: true,           // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
+        secure: true,           // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
         maxAge: 60000, 
         secure: false},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
     store,
@@ -86,6 +86,8 @@ async function main() {
             pot = process.env.PORT || "local host"        // D: PORT
         d. -> package.json
             scripts { D: "start": "node app.js"} // Heroku does not know this
+            Atlas: You are trying to access a Server that isn't whitelisted i.e MongodbAtlas -- now we're not accessing atlas from the local machine
+            Add IP Adress : Allow Access from Anywhere
         e. D: a jQuery for R:'s sake :: Challenge: SearchBOx
         f. reseed your data to spread out in Philippiens -> use hoppscotch 
         g. mapbox's data expects an obj w/ a key of features, containing all the data

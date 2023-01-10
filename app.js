@@ -29,8 +29,7 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public')));      //tell express to serve our public dir because href="../../etc" is redundant
 app.use(flash());        // connect.sid i.e session id, a cookie sent for verification of session
 
-const DB_URL = process.env.DB_URL;   // Mongo Atlas Db is our cloud web server
-const localHostURL = "mongodb://127.0.0.1:27017/yelpCamp";
+const DB_URL = process.env.DB_URL || "mongodb://127.0.0.1:27017/yelpCamp";   // Mongo Atlas Db is our cloud web server
 const port = process.env.PORT || 80; // By default, azure listens to port 80
 
 const store = MongoDBStore.create({          // We want our session stored in mongo, not in memory
@@ -39,7 +38,8 @@ const store = MongoDBStore.create({          // We want our session stored in mo
         secret: 'LegitSceretive'
       },
     touchAfter: 24 * 3600,                  // Resave the session every 24hrs, not every page refresh
-}).on("error", function(e){ console.log(e)})
+})
+store.on("error", function(e){ console.log(e)})
 
 const sessionOption = {
     secret: process.env.SECRET,

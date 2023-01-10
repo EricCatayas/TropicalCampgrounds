@@ -67,7 +67,7 @@ main().catch(err => console.log(err));
 
 mongoose.set('strictQuery', true);
 async function main() {
-  await mongoose.connect(localHostURL,{useNewUrlParser:true, useUnifiedTopology:true})  //  useCreateIndex:true, Not supported XX
+  await mongoose.connect(DB_URL,{useNewUrlParser:true, useUnifiedTopology:true})  //  useCreateIndex:true, Not supported XX
     .then(()=>{
         console.log('Db Connection established');
     })
@@ -80,40 +80,12 @@ async function main() {
 // Other: Child 123456
 
 /* -------------- TODO      
-        c. C: .gitignore
-            nodeMOdules   .env  bcuz pushing nodeMOdules to web host will reinstall all the pkgs 
-            dbUrl = process.env.DB_URL || "local host"
-            pot = process.env.PORT || "local host"        // D: PORT
-        d. -> package.json
-            scripts { D: "start": "node app.js"} // Heroku does not know this
-            Atlas: You are trying to access a Server that isn't whitelisted i.e MongodbAtlas -- now we're not accessing atlas from the local machine
-            Add IP Adress : Allow Access from Anywhere
-        e. D: a jQuery for R:'s sake :: Challenge: SearchBOx
         f. reseed your data to spread out in Philippiens -> use hoppscotch 
         g. mapbox's data expects an obj w/ a key of features, containing all the data
     TODO: images.ejs jQuery
 */  /* -------------- EJS ------------------ */ 
 
-// app.use(
-//     helmet.contentSecurityPolicy({                  
-//         directives: {
-//             defaultSrc: [],
-//             connectSrc: ["'self'", ...connectSrcUrls],
-//             scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
-//             styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
-//             workerSrc: ["'self'", "blob:"],
-//             objectSrc: [],
-//             imgSrc: [
-//                 "'self'",
-//                 "blob:",
-//                 "data:",
-//                 "https://res.cloudinary.com/dbgolykzg/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
-//                 "https://images.unsplash.com/",
-//             ],
-//             fontSrc: ["'self'", ...fontSrcUrls],
-//         },
-//     })
-// );
+
 const scriptSrcUrls = [
     "https://stackpath.bootstrapcdn.com/",
     "https://api.tiles.mapbox.com/",

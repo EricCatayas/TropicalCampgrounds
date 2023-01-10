@@ -29,7 +29,7 @@ main().catch(err => console.log(err));
 
 mongoose.set('strictQuery', true);
 async function main() {
-  await mongoose.connect(DB_URL,{useNewUrlParser:true, useUnifiedTopology:true, writeConcern:{w:'majority'}})  //  useCreateIndex:true, Not supported XX
+  await mongoose.connect(DB_URL,{useNewUrlParser:true, useUnifiedTopology:true})  //  useCreateIndex:true, Not supported XX
     .then(()=>{
         console.log('Db Connection established');
     })

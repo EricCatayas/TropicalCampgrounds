@@ -17,20 +17,19 @@ const User = require('./models/user');
 const cookieeeeParser = require('cookie-parser');
 const flash = require('connect-flash');
 const session = require('express-session'); 
-const MongoDBStore = require('connect-mongo')(session);     // By def, sessions are stored in memory; does not scale well or efficient
+const MongoStore = require('connect-mongo');     // By def, sessions are stored in memory; does not scale well or efficient
 const passport = require('passport');          
 const localStrategy = require('passport-local');
 const helmet = require('helmet');               // GET /campgrounds .. Response? up to 15 Headers you do not want to be accessed 
 
 
 const DB_URL = process.env.DB_URL || "mongodb://127.0.0.1:27017/yelpCamp";   // Mongo Atlas Db is our cloud web server
-const port = process.env.PORT || 80; // By default, azure listens to port 80
 
 main().catch(err => console.log(err));
 
 mongoose.set('strictQuery', true);
 async function main() {
-  await mongoose.connect(DB_URL,{useNewUrlParser:true, useUnifiedTopology:true})  //  useCreateIndex:true, Not supported XX
+  await mongoose.connect(DB_URL,{useNewUrlParser:true, useUnifiedTopology:true, writeConcern:{w:'majority'}})  //  useCreateIndex:true, Not supported XX
     .then(()=>{
         console.log('Db Connection established');
     })
@@ -48,7 +47,7 @@ app.use(express.static(path.join(__dirname,'public')));      //tell express to s
 app.use(flash());        // connect.sid i.e session id, a cookie sent for verification of session
 const secret = process.env.SECRET;
 
-const store = MongoDBStore.create({          // We want our session stored in mongo, not in memory
+const store = MongoStore.create({          // We want our session stored in mongo, not in memory
     mongoUrl: DB_URL,
     crypto: {
         secret
@@ -178,6 +177,9 @@ app.use((err,req,res,next)=>{
 app.use((req,res)=>{
     res.send('Page Not Found');   // runs only when no page above exists
 })
+
+const port = process.env.PORT || 3000; // By default, azure listens to port 80
+
 app.listen(port, ()=>{
     console.log(`I am listenin to port ${port}`);
 })

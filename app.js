@@ -34,7 +34,7 @@ const localHostURL = "mongodb://127.0.0.1:27017/yelpCamp";
 const port = process.env.PORT || 80; // By default, azure listens to port 80
 
 const store = MongoDBStore.create({          // We want our session stored in mongo, not in memory
-    mongoUrl: localHostURL,
+    mongoUrl: DB_URL,
     crypto: {
         secret: 'LegitSceretive'
       },
@@ -47,7 +47,7 @@ const sessionOption = {
     saveUninitialized:true,                                                                         //when saveUninitialized is set to false, the session will not be saved or the session cookie will not be set on the browser unless the session is modified
     cookie:{  
         expires: Date.now() + 1000 * 60 * 60 * 24, 
-        httpOnly: true, 
+        // httpOnly: true, 
         secure: true,           // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
         maxAge: 60000, 
         secure: false},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting

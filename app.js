@@ -1,5 +1,6 @@
 if(process.env.NODE_ENV !== 'production')  // Def is 'development' mode -- in production, we don't store environment vars in files
     require('dotenv').config(); 
+    try{  // One big ass try catch block
 
 const express = require('express');
 const app = express();
@@ -16,52 +17,14 @@ const User = require('./models/user');
 const cookieeeeParser = require('cookie-parser');
 const flash = require('connect-flash');
 const session = require('express-session'); 
-const MongoDBStore = require('connect-mongo');     // By def, sessions are stored in memory; does not scale well or efficient
+const MongoDBStore = require('connect-mongo')(session);     // By def, sessions are stored in memory; does not scale well or efficient
 const passport = require('passport');          
 const localStrategy = require('passport-local');
 const helmet = require('helmet');               // GET /campgrounds .. Response? up to 15 Headers you do not want to be accessed 
 
-app.engine('ejs', ejsMate);                    // Used for boilertemplate.ejs
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname,'views'));
-app.use(express.urlencoded({extended:true}));  //Every req e.g form submit (is urlencoded)
-app.use(methodOverride('_method'));
-app.use(express.static(path.join(__dirname,'public')));      //tell express to serve our public dir because href="../../etc" is redundant
-app.use(flash());        // connect.sid i.e session id, a cookie sent for verification of session
 
 const DB_URL = process.env.DB_URL || "mongodb://127.0.0.1:27017/yelpCamp";   // Mongo Atlas Db is our cloud web server
 const port = process.env.PORT || 80; // By default, azure listens to port 80
-
-const store = MongoDBStore.create({          // We want our session stored in mongo, not in memory
-    mongoUrl: DB_URL,
-    crypto: {
-        secret: 'LegitSceretive'
-      },
-    touchAfter: 24 * 3600,                  // Resave the session every 24hrs, not every page refresh
-})
-store.on("error", function(e){ console.log(e)})
-
-const sessionOption = {
-    secret: process.env.SECRET,
-    resave:false,
-    saveUninitialized:true,                                                                         //when saveUninitialized is set to false, the session will not be saved or the session cookie will not be set on the browser unless the session is modified
-    cookie:{  
-        expires: Date.now() + 1000 * 60 * 60 * 24, 
-        // httpOnly: true, 
-        secure: true,           // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
-        maxAge: 60000, 
-        secure: false},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
-    store,
-};                                                                                                                   // If secure is true, and you access your site over HTTP, the cookie will not be set.
-app.use(cookieeeeParser('Heellooowww'));
-app.use(mongoSanitize())                                // "Cross-site Scripting ":  malicious users could send an object containing a $ operator e.g /users/?{$gt:""}, which could change the context of a database operation.                                    
-app.use(session(sessionOption));        //needed for flash -- also used for data sessions sim to cookie
-app.use(passport.initialize());                              // for user login/registration -- must come after session
-app.use(passport.session());
-passport.use(new localStrategy(User.authenticate()));         
-passport.serializeUser(User.serializeUser());                 // .How do we store user in the session?
-passport.deserializeUser(User.deserializeUser());             // .How do we get the user out of the session?  e.g req.user
-
 
 main().catch(err => console.log(err));
 
@@ -75,6 +38,41 @@ async function main() {
         console.log(err);
     })
 }
+
+app.engine('ejs', ejsMate);                    // Used for boilertemplate.ejs
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname,'views'));
+app.use(express.urlencoded({extended:true}));  //Every req e.g form submit (is urlencoded)
+app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname,'public')));      //tell express to serve our public dir because href="../../etc" is redundant
+app.use(flash());        // connect.sid i.e session id, a cookie sent for verification of session
+const secret = process.env.SECRET;
+
+const store = MongoDBStore.create({          // We want our session stored in mongo, not in memory
+    mongoUrl: DB_URL,
+    crypto: {
+        secret
+      },
+    touchAfter: 24 * 3600,                  // Resave the session every 24hrs, not every page refresh
+})
+store.on("error", function(e){ console.log("Session Store Error!", e)})
+
+const sessionOption = {
+    secret,
+    resave:false,
+    saveUninitialized:true,                                                                         //when saveUninitialized is set to false, the session will not be saved or the session cookie will not be set on the browser unless the session is modified
+    cookie:{  
+        expires: Date.now() + 1000 * 60 * 60 * 24, 
+        // httpOnly: true, 
+        secure: true,           // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
+        maxAge: 60000, 
+        secure: false},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
+    store,
+};                                                                                                                   // If secure is true, and you access your site over HTTP, the cookie will not be set.
+app.use(cookieeeeParser('Heellooowww'));
+app.use(mongoSanitize())                                // "Cross-site Scripting ":  malicious users could send an object containing a $ operator e.g /users/?{$gt:""}, which could change the context of a database operation.                                    
+app.use(session(sessionOption));        //needed for flash -- also used for data sessions sim to cookie
+
 
 // Admin: MagSci  123456
 // Other: Child 123456
@@ -135,7 +133,13 @@ app.use(
         }
     })
 );
-const Campground = require('./models/campgrounds'); 
+
+app.use(passport.initialize());                              // for user login/registration -- must come after session
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));         
+passport.serializeUser(User.serializeUser());                 // .How do we store user in the session?
+passport.deserializeUser(User.deserializeUser());             // .How do we get the user out of the session?  e.g req.user
+
 
 app.use(async (req,res,next)=>{
     res.locals.success = req.flash('success');          // <-- locals can only be ref in .ejs
@@ -177,3 +181,8 @@ app.use((req,res)=>{
 app.listen(port, ()=>{
     console.log(`I am listenin to port ${port}`);
 })
+
+
+}catch(error){
+    console.log(error);
+}

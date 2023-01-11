@@ -77,6 +77,8 @@ app.use(session(sessionOption));        //needed for flash -- also used for data
 // Other: Child 123456
 
 /* -------------- TODO      
+        a. Handle Default images
+        b. 
         f. reseed your data to spread out in Philippiens -> use hoppscotch 
         g. mapbox's data expects an obj w/ a key of features, containing all the data
     TODO: images.ejs jQuery

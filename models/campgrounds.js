@@ -17,7 +17,7 @@ const campgroundSchema = new Schema({
     },
     price:{
         type: Number,
-        required: true,
+        required: false,
         min: [0,'Cannot set price below 0']
     },
     images:[{
@@ -40,7 +40,7 @@ const campgroundSchema = new Schema({
     },
     description: {
         type: String,
-        required: true,
+        required: false,
     },
     reviews: [{
         type: Schema.Types.ObjectId,

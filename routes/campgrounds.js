@@ -1,18 +1,17 @@
 const express = require('express');
-const catchAsync = require('../utilities/catchAsync');
+const {catchAsync, catchRedirectToNew} = require('../utilities/catchAsync');
 const {isLoggedIn, isAuthorized, validateCampground} = require('../middleware');
 const multer  = require('multer');              // multiform-parser; urlencoded does not support form-data
 const fs = require('fs');
 const {storage} = require('../services/cloudinary');
 const campgrounds = require('../controllers/campgrounds');
-const Campground = require('../models/campgrounds');
 const router = express.Router();
 
 const upload = multer({storage});
 
 router.route('/')
     .get(catchAsync(campgrounds.index))
-    .post(isLoggedIn, upload.array('campground[image]'),validateCampground, catchAsync(campgrounds.createCampground))
+    .post(isLoggedIn, upload.array('campground[image]'), catchRedirectToNew(validateCampground), campgrounds.createCampground)
 
 router.get('/new', isLoggedIn, catchAsync(campgrounds.renderNewForm))
 

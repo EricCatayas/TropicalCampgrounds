@@ -1,5 +1,5 @@
 const express = require('express');
-const catchAsync = require('../utilities/catchAsync');
+const {catchAsync} = require('../utilities/catchAsync');
 const Review = require('../models/reviews');
 const Campground = require('../models/campgrounds');
 const updateCampground = require('../utilities/commonFunctions');

@@ -19,52 +19,60 @@ $(document).ready(function(){
     })
 })
 </script>
-
-<div id="carouselExampleCaptions" class="carousel slide mb-3" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <% campground.images.forEach(function(img, i){ %> 
-            <div class="carousel-item <%= i <= 0 ? 'active' : '' %>">
-                <img src="<%= img.url %>" class="d-block w-100" alt="...">
-                <div class="carousel-caption d-none d-md-block">
-                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseBootstrap" aria-expanded="false" aria-controls="multiCollapseExample2">Choose Images</button>
-                </div>
-            </div>
-        <% }) %> 
-    </div>   
-    <% if(campground.images.length > 1) { %>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-    </button>
-    <% } %> 
-</div>
-
-<div class="collapse multi-collapse" id="multiCollapseBootstrap">
-    <div class="row">
-        <% campground.images.forEach(function(img, i){ %> 
-            <div class="col-sm-4">
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <img src="<%= img.thumbnail%> " class="card-img-top img-thumbnail rounded" alt="...">
-                        <a href="<%=img.url%>" class="card-link">View Image</a> <!-- room for improvement -->
-                        <form method="post">
-                            <button class="btn btn-danger" formaction="/campgrounds/<%=campground._id%>/images/<%=img._id%>?_method=DELETE">Delete Image</button>
-                        </form>
+<% if(campground.images && campground.images.length){ %>
+    <div id="carouselExampleCaptions" class="carousel slide mb-3" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <% campground.images.forEach(function(img, i){ %> 
+                <div class="carousel-item <%= i <= 0 ? 'active' : '' %>">
+                    <img src="<%= img.url %>" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseBootstrap" aria-expanded="false" aria-controls="multiCollapseExample2">Choose Images</button>
                     </div>
                 </div>
-            </div>
-        <% }) %> 
+            <% }) %> 
+        </div>   
+        <% if(campground.images.length > 1) { %>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+        </button>
+        <% } %> 
     </div>
+
+    <div class="collapse multi-collapse" id="multiCollapseBootstrap">
+        <div class="row">
+            <% campground.images.forEach(function(img, i){ %> 
+                <div class="col-sm-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <img src="<%= img.thumbnail%> " class="card-img-top img-thumbnail rounded" alt="...">
+                            <a href="<%=img.url%>" class="card-link">View Image</a> <!-- room for improvement -->
+                            <form method="post">
+                                <button class="btn btn-danger" formaction="/campgrounds/<%=campground._id%>/images/<%=img._id%>?_method=DELETE">Delete Image</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }) %> 
+        </div>
+        <div class="mb-3">
+            <form action="/campgrounds/<%=campground._id%>/images/new" method="post" enctype="multipart/form-data">
+                <label for="inputImagesFile" class="form-label">Add More Images</label>
+                <input type="file" class="form-control" id="inputImagesFile" name="newImages" aria-describedby="imageHelp" multiple>
+                <button type="submit" class="btn btn-success" id="uploadImagesBtn">Upload</button>
+            </form>
+        </div>
+    </div>
+<% } else { %>
     <div class="mb-3">
         <form action="/campgrounds/<%=campground._id%>/images/new" method="post" enctype="multipart/form-data">
-            <label for="inputImagesFile" class="form-label">Add More Images</label>
+            <label for="inputImagesFile" class="form-label">Add Images</label>
             <input type="file" class="form-control" id="inputImagesFile" name="newImages" aria-describedby="imageHelp" multiple>
             <button type="submit" class="btn btn-success" id="uploadImagesBtn">Upload</button>
         </form>
     </div>
-
-</div>
+<% } %>

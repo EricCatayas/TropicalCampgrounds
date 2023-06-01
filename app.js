@@ -38,7 +38,7 @@ async function main() {
     })
 }
 
-app.engine('ejs', ejsMate);                    // Used for boilertemplate.ejs
+app.engine('ejs', ejsMate);                   
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname,'views'));
 app.use(express.urlencoded({extended:true}));  //Every req e.g form submit (is urlencoded)
@@ -56,6 +56,7 @@ const store = MongoStore.create({          // We want our session stored in mong
 })
 store.on("error", function(e){ console.log("Session Store Error!", e)})
 
+const isDeploying = process.env.NODE_ENV === 'production'; // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
 const sessionOption = {
     secret,
     resave:false,
@@ -63,9 +64,8 @@ const sessionOption = {
     cookie:{  
         expires: Date.now() + 1000 * 60 * 60 * 24, 
         // httpOnly: true, 
-        secure: true,           // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
-        maxAge: 60000, 
-        secure: false},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
+        maxAge: 1000 * 60 * 60 * 24, 
+        secure: isDeploying},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
     store,
 };                                                                                                                   // If secure is true, and you access your site over HTTP, the cookie will not be set.
 app.use(cookieeeeParser('Heellooowww'));
@@ -73,13 +73,10 @@ app.use(mongoSanitize())                                // "Cross-site Scripting
 app.use(session(sessionOption));        //needed for flash -- also used for data sessions sim to cookie
 
 
-// Admin: MagSci  123456
-// Other: Child 123456
+// Admin: Admin123 admin@user.com 123456
 
 /* -------------- TODO      
-        a. Handle Default images
-        b. 
-        f. reseed your data to spread out in Philippiens -> use hoppscotch 
+        b. Env your keys
         g. mapbox's data expects an obj w/ a key of features, containing all the data
     TODO: images.ejs jQuery
 */  /* -------------- EJS ------------------ */ 

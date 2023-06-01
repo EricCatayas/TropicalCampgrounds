@@ -10,8 +10,8 @@ const fs = require('fs');
 
 // -> Can upload but don't know how to convert file to img
 
-const travelrecordConnectionstring = "DefaultEndpointsProtocol=https;AccountName=travelrecordapp;AccountKey=g+rYFwl1nl9ZcBa6KSSrla6Cht1UbeZrJ8e2eQ/NLmuQYblnZ3RO+MSK1UWv7tkAqBQ0ASDpIo/V+ASt9NSwIA==;EndpointSuffix=core.windows.net";
-const AccountAccessKey="g+rYFwl1nl9ZcBa6KSSrla6Cht1UbeZrJ8e2eQ/NLmuQYblnZ3RO+MSK1UWv7tkAqBQ0ASDpIo/V+ASt9NSwIA==";
+const travelrecordConnectionstring = process.env.TravelRecordConnectionString
+const AccountAccessKey=process.env.AzureAccessKey
 const AccountName = "travelrecordapp";
 // BlobContainerClient _blobContainerClient = new BlobContainerClient(travelrecordConnectionstring, "photos")
 // const blobContainerClient = ContainerClient.fromConnectionString(connectionstring, "campg")

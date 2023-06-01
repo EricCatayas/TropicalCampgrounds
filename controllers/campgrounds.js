@@ -13,8 +13,8 @@ module.exports.index = async (req,res,next)=>{
 module.exports.createCampground = async (req,res,next)=>{   
     // (!req.body.campground) throw new ExpressError('Invalid Campground Data', 400); Needs server-side handling && is not scalable. Solution: JOI api
     try{
-        const newCampground = new Campground(req.body.campground); // R: new.ejs
-        newCampground.images = req.files.map(f => ({url:f.path, filename: f.filename}));  // <-- N: Remove'Campgrounds/'
+        const newCampground = new Campground(req.body.campground); 
+        newCampground.images = req.files.map(f => ({url:f.path, filename: f.filename}));  
         newCampground.author = req.user._id;
         const response = await geocodeClient.forwardGeocode({
             query: newCampground.location,
@@ -26,11 +26,19 @@ module.exports.createCampground = async (req,res,next)=>{
         req.flash('success', 'Campground has been successfully added');
         res.redirect(`/campgrounds/${newCampground._id}`);
     } catch(error){
+        //Delete uploaded images from Cloudinary
+        if (req.files) {
+            for (const file of req.files) {
+              await cloudinary.uploader.destroy(file.filename);
+            }
+        }
+      
         req.flash('error', error.message);
         res.redirect(`/campgrounds/new`); 
     }
 }
 module.exports.renderNewForm = async (req,res,next)=>{        //Express may treat new and :id as alike calls
+    res.locals.errorMessage = null;
     res.render('campgrounds/new');                                       // Must precede post('/')?
 } 
 module.exports.showDetails = async (req,res,next)=>{

@@ -2,7 +2,7 @@ const Review = require('./models/reviews');
 const ExpressError = require('./utilities/expressError');
 const {campgroundSchema, registrationSchema, reviewSchema} = require('./schemas');
 
-module.exports.isLoggedIn = (req,res,next) => {   // simplify                       // module.exports.isLoggedIn XX redirects to /register
+module.exports.isLoggedIn = (req,res,next) => {                        // module.exports.isLoggedIn XX redirects to /register
     // Ex:  req.path = '/new', req.originalUrl = '/campgrounds/new'
     if(req.isAuthenticated()){
         next();

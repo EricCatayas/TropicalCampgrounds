@@ -34,31 +34,33 @@
         <% } %> 
     </div>
 <!-- If you want 3 x 3 display, ref: TechTree Webapp -->
-            <% for(const campground of campgrounds){ %>
-                <!-- <div class=" row-sm-10 row-xl-6 offset-sm-1 offset-xs-0"> -->
-                    <div class="card mb-3" style="max-width: 540px;"> <!-- Add jquery for centering items when sm s-->
-                        <div class="row">
-                            <div class="col-md-4 text-center text-md-start">
-                                <% if(campgrounds.images.length){ %> 
-                                <img src="<%= campground.images[0].thumbnail%>" class="img-fluid rounded-start" alt="...">
-                                <% } else { %>
-                                <img src="/images/def_landscape.png" class="img-fluid rounded-start" alt="...">
-                                <% } %>  
-                            </div>
+    <div class="row row-cols-md-2 row-cols-sm-1">
+        <% for(const campground of campgrounds){ %>
+            <div class="col">
+                <div class="card mb-3" style="max-width: 540px;"> <!-- Add jquery for centering items when sm s-->
+                    <div class="row">
+                        <div class="col-md-4 text-center text-md-start">
+                            <% if(campground.images && campground.images.length){ %> 
+                            <img src="<%= campground.images[0].thumbnail%>" class="img-fluid rounded-start" alt="...">
+                            <% } else { %>
+                            <img src="/images/def_landscape.png" class="img-fluid rounded-start" alt="...">
+                            <% } %>  
+                        </div>
 
-                            <div class="col-md-8 text-center text-md-start">
-                                <div class="card-body">
-                                <h5 class="card-title"><%= campground.title %></h5>
-                                <p class="card-text"><%= campground.description %> </p>
-                                <p class="card-text"><small class="text-muted">Location: <%= campground.location %></small></p>
-                                <p class="card-text"><small class="text-muted">$<%= campground.price %>/night</small></p>
-                                <p class="card-text"><a href="/campgrounds/<%=campground._id%>">View</a></p>
-                                </div>
+                        <div class="col-md-8 text-center text-md-start">
+                            <div class="card-body">
+                            <h5 class="card-title"><%= campground.title %></h5>
+                            <p class="card-text"><%= campground.description.length > 95 ? campground.description.substring(0, 95) + " ..." : campground.description %> </p>
+                            <p class="card-text"><small class="text-muted">Location: <%= campground.location %></small></p>
+                            <p class="card-text"><small class="text-muted">Php<%= campground.price %>/night</small></p>
+                            <p class="card-text"><a href="/campgrounds/<%=campground._id%>">View</a></p>
                             </div>
                         </div>
                     </div>
-                    <!-- </div> -->
-                    <% } %>
+                </div>
+            </div>
+        <% } %>
+    </div>
 <!-- </div> -->
 </section>
 <script>

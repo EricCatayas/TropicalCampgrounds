@@ -57,13 +57,15 @@ const store = MongoStore.create({          // We want our session stored in mong
 store.on("error", function(e){ console.log("Session Store Error!", e)})
 
 const isDeploying = process.env.NODE_ENV === 'production'; // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
+    isDeploying = true;
+    
 const sessionOption = {
     secret,
     resave:false,
     saveUninitialized:true,                                                                         //when saveUninitialized is set to false, the session will not be saved or the session cookie will not be set on the browser unless the session is modified
     cookie:{  
         expires: Date.now() + 1000 * 60 * 60 * 24, 
-        // httpOnly: true, 
+        httpOnly: true, 
         maxAge: 1000 * 60 * 60 * 24, 
         secure: isDeploying},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
     store,

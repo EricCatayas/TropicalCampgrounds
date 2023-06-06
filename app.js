@@ -21,6 +21,8 @@ const MongoStore = require('connect-mongo');     // By def, sessions are stored 
 const passport = require('passport');          
 const localStrategy = require('passport-local');
 const helmet = require('helmet');               // GET /campgrounds .. Response? up to 15 Headers you do not want to be accessed 
+const crypto = require('crypto');
+
 
 
 const DB_URL = process.env.DB_URL || "mongodb://127.0.0.1:27017/yelpCamp";   // Mongo Atlas Db is our cloud web server
@@ -45,7 +47,12 @@ app.use(express.urlencoded({extended:true}));  //Every req e.g form submit (is u
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname,'public')));      //tell express to serve our public dir because href="../../etc" is redundant
 app.use(flash());        // connect.sid i.e session id, a cookie sent for verification of session
-const secret = process.env.SECRET;
+
+const generateSecret = () => {
+    const secretLength = 32; // Length of the secret in bytes
+    return crypto.randomBytes(secretLength).toString('hex');
+};
+const secret = generateSecret();
 
 const store = MongoStore.create({          // We want our session stored in mongo, not in memory
     mongoUrl: DB_URL,
@@ -56,9 +63,8 @@ const store = MongoStore.create({          // We want our session stored in mong
 })
 store.on("error", function(e){ console.log("Session Store Error!", e)})
 
-const isDeploying = process.env.NODE_ENV === 'production'; // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
-    isDeploying = true;
-    
+const isDeploying =  true; //process.env.NODE_ENV === 'production'; // "This cookie should only work or be config in Https (Httpsecure); localhost is not secure" -- set true if deploying
+
 const sessionOption = {
     secret,
     resave:false,

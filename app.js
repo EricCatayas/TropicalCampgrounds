@@ -1,6 +1,7 @@
-if(process.env.NODE_ENV !== 'production')  // Def is 'development' mode -- in production, we don't store environment vars in files
+if(process.env.NODE_ENV !== 'production'){  // Def is 'development' mode -- in production, we don't store environment vars in files
     require('dotenv').config(); 
-    try{  // One big ass try catch block
+}
+try{  // One big ass try catch block
 
 const express = require('express');
 const app = express();
@@ -71,9 +72,10 @@ const sessionOption = {
     saveUninitialized:true,                                                                         //when saveUninitialized is set to false, the session will not be saved or the session cookie will not be set on the browser unless the session is modified
     cookie:{  
         expires: Date.now() + 1000 * 60 * 60 * 24, 
-        httpOnly: true, 
+        httpOnly: false, 
         maxAge: 1000 * 60 * 60 * 24, 
-        secure: isDeploying},           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
+        //secure: isDeploying
+    },           // HttpOnly: if true, the cookie cannot be accessed through client-side scripting i.e cross-site scripting
     store,
 };                                                                                                                   // If secure is true, and you access your site over HTTP, the cookie will not be set.
 app.use(cookieeeeParser('Heellooowww'));
@@ -81,13 +83,9 @@ app.use(mongoSanitize())                                // "Cross-site Scripting
 app.use(session(sessionOption));        //needed for flash -- also used for data sessions sim to cookie
 
 
-// Admin: Admin123 admin@user.com 123456
+// Admin password: adminUser 
 
-/* -------------- TODO      
-        b. Env your keys
-        g. mapbox's data expects an obj w/ a key of features, containing all the data
-    TODO: images.ejs jQuery
-*/  /* -------------- EJS ------------------ */ 
+/* -------------- EJS ------------------ */ 
 
 
 const scriptSrcUrls = [
